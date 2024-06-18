@@ -1,0 +1,46 @@
+{
+    "name": "PlayerControls",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "9a8bbca1-e276-4261-adfa-3f17fdd4e928",
+            "actions": [
+                {
+                    "name": "Turn",
+                    "type": "Button",
+                    "id": "d3f8ef87-1695-42bd-a83a-e7a0d632ea7a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "cc430e73-0e10-48da-924b-a1c5fb9b3fb9",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "InfiniteHold",
+                    "processors": "",
+                    "groups": "Mouse",
+                    "action": "Turn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Mouse",
+            "bindingGroup": "Mouse",
+            "devices": [
+                {
+                    "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}
