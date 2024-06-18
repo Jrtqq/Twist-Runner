@@ -42,7 +42,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""cc430e73-0e10-48da-924b-a1c5fb9b3fb9"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""InfiniteHold"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse"",
                     ""action"": ""Turn"",
