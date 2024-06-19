@@ -371,7 +371,7 @@ Transform:
   m_GameObject: {fileID: 274167116}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.12, y: 1, z: 21.66}
+  m_LocalPosition: {x: -5.3, y: 1, z: 21.66}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1272,8 +1272,9 @@ GameObject:
   - component: {fileID: 1417218382}
   - component: {fileID: 1417218381}
   - component: {fileID: 1417218380}
-  - component: {fileID: 1417218378}
   - component: {fileID: 1417218385}
+  - component: {fileID: 1417218378}
+  - component: {fileID: 1417218386}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -1293,8 +1294,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cde6d75b2d176b458b85ba3b07718ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 5
-  _rotationSpeed: 1.5
+  _speed: 7.8
+  _rotationSpeed: 1.9
   _maxRotationRadius: 10
   _snapThreshold: 10
   _column:
@@ -1519,6 +1520,18 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &1417218386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417218377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b3568209bd91dd489d22830e0458989, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1494151543
 GameObject:
   m_ObjectHideFlags: 0
