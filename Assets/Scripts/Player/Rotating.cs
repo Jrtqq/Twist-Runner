@@ -22,19 +22,21 @@ namespace Player
 
         private bool _isRotating = false;
 
+        public bool TurnSide => _currentTurnSide == 1;
+
         private void Awake()
         {
             _transform = transform;
             _speed = _defaultSpeed;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (_isRotating)
             {
                 float angularSpeed = _speed / _currentTurnRadius * Mathf.Rad2Deg;
 
-                float angle = angularSpeed * Time.deltaTime * _currentTurnSide;
+                float angle = angularSpeed * Time.fixedDeltaTime * _currentTurnSide;
 
                 Quaternion rotation = Quaternion.Euler(0, angle, 0);
                 _currentCenterOffset = rotation * _currentCenterOffset;

@@ -19,9 +19,9 @@ namespace Player
             _speed = DefaultSpeed;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
-            transform.position += _transform.forward * _speed * Time.deltaTime;
+            transform.position += _transform.forward * _speed * Time.fixedDeltaTime;
         }
 
         public IEnumerator SpeedUp()

@@ -67,7 +67,7 @@ namespace Player
         {
             _mover.enabled = false;
             _rotator.StartRotation(column);
-            _view.StartRotation(column.position);
+            _view.StartRotation(column.position, _rotator.TurnSide);
         }
 
         private void StopRotation()
