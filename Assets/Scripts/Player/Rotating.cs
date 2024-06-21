@@ -2,73 +2,87 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-public class Rotating : MonoBehaviour
+namespace Player
 {
-    [SerializeField] private float _defaultSpeed;
-    [SerializeField] private float _maxRotationRadius;
-    [SerializeField] private float _snapThreshold;
-
-    [Header("Technical")]
-    [SerializeField] private LayerMask _column;
-    [SerializeField] private Transform _transform;
-
-    private float _speed;
-    private float _currentTurnSide = 0;
-    private Transform _rotationCenter = null;
-
-
-    public Vector3 RotationCenter => _rotationCenter.position;
-    public bool IsRotating { get; private set; } = false;
-
-    private void Awake()
+    public class Rotating : MonoBehaviour
     {
-        _transform = transform;
-        _speed = _defaultSpeed;
-    }
+        [SerializeField] private float _defaultSpeed;
+        [SerializeField] private float _maxRotationRadius;
+        [SerializeField] private float _snapThreshold;
 
-    private void Update()
-    {
-        if (IsRotating)
+        [Header("Technical")]
+        [SerializeField] private LayerMask _column;
+        [SerializeField] private Transform _transform;
+
+        private float _speed;
+        private float _currentTurnSide;
+        private float _currentTurnRadius;
+        private Vector3 _currentCenterOffset;
+        private Transform _rotationCenter = null;
+
+        private bool _isRotating = false;
+
+        private void Awake()
         {
-            _rotationCenter.Rotate(0, _speed * Time.deltaTime * _currentTurnSide, 0);
+            _transform = transform;
+            _speed = _defaultSpeed;
         }
-    }
 
-    public bool TryFindColumn(out Transform column)
-    {
-        column = Physics.OverlapSphere(_transform.position, _maxRotationRadius, _column).FirstOrDefault()?.transform;
-        return column != null;
-    }
+        private void Update()
+        {
+            if (_isRotating)
+            {
+                float angularSpeed = _speed / _currentTurnRadius * Mathf.Rad2Deg;
 
-    public void StartRotation(Transform center)
-    {
-        IsRotating = true;
-        _rotationCenter = center.transform;
-        _transform.SetParent(_rotationCenter);
+                float angle = angularSpeed * Time.deltaTime * _currentTurnSide;
 
-        _currentTurnSide = Mathf.Sign(_transform.InverseTransformPoint(_rotationCenter.position).x);
-        _transform.rotation = Quaternion.LookRotation(center.transform.position - _transform.position) * Quaternion.Euler(0, -90 * _currentTurnSide, 0);
-    }
+                Quaternion rotation = Quaternion.Euler(0, angle, 0);
+                _currentCenterOffset = rotation * _currentCenterOffset;
+                transform.position = _rotationCenter.position + _currentCenterOffset;
 
-    public void StopRotation()
-    {
-        IsRotating = false;
-        _rotationCenter = null;
-        _transform.SetParent(null);
-    }
+                transform.LookAt(_rotationCenter.position);
+                transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
+                transform.Rotate(0, -90 * _currentTurnSide, 0);
+            }
+        }
 
-    public void AlignDirection()
-    {
-        float snappedY = Mathf.Round(_transform.eulerAngles.y / 90) * 90;
+        public bool TryFindColumn(out Transform column)
+        {
+            column = Physics.OverlapSphere(_transform.position, _maxRotationRadius, _column).FirstOrDefault()?.transform;
+            return column != null;
+        }
 
-        if (Mathf.Abs(snappedY - _transform.eulerAngles.y) <= _snapThreshold)
-            transform.rotation = Quaternion.Euler(transform.eulerAngles.x, snappedY, transform.eulerAngles.z);
-    }
+        public void StartRotation(Transform center)
+        {
+            _isRotating = true;
+            _rotationCenter = center;
+            _currentCenterOffset = transform.position - _rotationCenter.position;
 
-    public IEnumerator SpeedUp(float percentage, float duration)
-    {
-        _speed += _defaultSpeed * percentage;
-        yield return new WaitForSeconds(duration);
-        _speed = _defaultSpeed;
+            _currentTurnSide = Mathf.Sign(transform.InverseTransformPoint(_rotationCenter.position).x);
+
+            _currentTurnRadius = _currentCenterOffset.magnitude;
+        }
+
+        public void StopRotation()
+        {
+            _isRotating = false;
+            _rotationCenter = null;
+            _transform.SetParent(null);
+        }
+
+        public void AlignDirection()
+        {
+            float snappedY = Mathf.Round(_transform.eulerAngles.y / 90) * 90;
+
+            if (Mathf.Abs(snappedY - _transform.eulerAngles.y) <= _snapThreshold)
+                transform.rotation = Quaternion.Euler(transform.eulerAngles.x, snappedY, transform.eulerAngles.z);
+        }
+
+        public IEnumerator SpeedUp(float percentage, float duration)
+        {
+            _speed += _defaultSpeed * percentage;
+            yield return new WaitForSeconds(duration);
+            _speed = _defaultSpeed;
+        }
     }
 }

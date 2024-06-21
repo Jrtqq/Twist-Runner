@@ -1,23 +1,29 @@
 using System.Collections;
 using UnityEngine;
 
-public class Jumper : MonoBehaviour
+namespace Player
 {
-    [SerializeField] private Transform _transform;
-    [SerializeField] private AnimationCurve _jumpCurve;
-
-    public float JumpDuration => _jumpCurve.keys[^1].time;
-
-    public IEnumerator Jump()
+    public class Jumper : MonoBehaviour
     {
-        float time = 0;
+        [SerializeField] private Transform _transform;
+        [SerializeField] private AnimationCurve _jumpCurve;
 
-        while (time < JumpDuration)
+        public bool IsJumping { get; private set; } = false;
+
+        public IEnumerator Jump()
         {
-            _transform.position = new(_transform.position.x, _jumpCurve.Evaluate(time), transform.position.z);
-            time += Time.deltaTime;
+            float time = 0;
+            IsJumping = true;
 
-            yield return null;
+            while (time < _jumpCurve.keys[^1].time)
+            {
+                _transform.position = new(_transform.position.x, _jumpCurve.Evaluate(time), transform.position.z);
+                time += Time.deltaTime;
+
+                yield return null;
+            }
+
+            IsJumping = false;
         }
     }
 }

@@ -40,7 +40,9 @@ namespace Player
         {
             if (other.TryGetComponent(out JumpPad _))
             {
+                StopRotation();
                 StartCoroutine(_jumper.Jump());
+                _view.Jump();
             }
             else if (other.TryGetComponent(out SpeedBooster _))
             {
@@ -51,20 +53,27 @@ namespace Player
 
         private void OnTurnButton(InputAction.CallbackContext context)
         {
-            if (_rotator.TryFindColumn(out Transform column))
-            {
-                _mover.enabled = false;
-                _rotator.StartRotation(column);
-
-                _view.StartRotation(column.position);
-            }
+            if (_jumper.IsJumping == false && _rotator.TryFindColumn(out Transform column))
+                StartRotation(column);
         }
         
         private void OnTurnButtonRelease(InputAction.CallbackContext context)
         {
+            if (_jumper.IsJumping == false)
+                StopRotation();
+        }
+
+        private void StartRotation(Transform column)
+        {
+            _mover.enabled = false;
+            _rotator.StartRotation(column);
+            _view.StartRotation(column.position);
+        }
+
+        private void StopRotation()
+        {
             _mover.enabled = true;
             _rotator.StopRotation();
-
             _view.StopRotation();
         }
     }
