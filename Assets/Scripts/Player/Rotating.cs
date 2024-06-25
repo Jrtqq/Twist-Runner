@@ -18,6 +18,7 @@ namespace Player
         private float _currentTurnSide;
         private float _currentTurnRadius;
         private Vector3 _currentCenterOffset;
+        private Quaternion _currentAngle;
         private Transform _rotationCenter = null;
 
         private bool _isRotating = false;
@@ -34,17 +35,8 @@ namespace Player
         {
             if (_isRotating)
             {
-                float angularSpeed = _speed / _currentTurnRadius * Mathf.Rad2Deg;
-
-                float angle = angularSpeed * Time.fixedDeltaTime * _currentTurnSide;
-
-                Quaternion rotation = Quaternion.Euler(0, angle, 0);
-                _currentCenterOffset = rotation * _currentCenterOffset;
-                transform.position = _rotationCenter.position + _currentCenterOffset;
-
-                transform.LookAt(_rotationCenter.position);
-                transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
-                transform.Rotate(0, -90 * _currentTurnSide, 0);
+                MoveAngular();
+                TurnByDirection();
             }
         }
 
@@ -61,23 +53,14 @@ namespace Player
             _currentCenterOffset = transform.position - _rotationCenter.position;
 
             _currentTurnSide = Mathf.Sign(transform.InverseTransformPoint(_rotationCenter.position).x);
-
             _currentTurnRadius = _currentCenterOffset.magnitude;
+            _currentAngle = Quaternion.Euler(0, (_speed / _currentTurnRadius * Mathf.Rad2Deg) * Time.fixedDeltaTime * _currentTurnSide, 0);
         }
 
         public void StopRotation()
         {
             _isRotating = false;
-            _rotationCenter = null;
-            _transform.SetParent(null);
-        }
-
-        public void AlignDirection()
-        {
-            float snappedY = Mathf.Round(_transform.eulerAngles.y / 90) * 90;
-
-            if (Mathf.Abs(snappedY - _transform.eulerAngles.y) <= _snapThreshold)
-                transform.rotation = Quaternion.Euler(transform.eulerAngles.x, snappedY, transform.eulerAngles.z);
+            AlignDirection();
         }
 
         public IEnumerator SpeedUp(float percentage, float duration)
@@ -85,6 +68,27 @@ namespace Player
             _speed += _defaultSpeed * percentage;
             yield return new WaitForSeconds(duration);
             _speed = _defaultSpeed;
+        }
+
+        private void MoveAngular()
+        {
+            _currentCenterOffset = _currentAngle * _currentCenterOffset;
+            transform.position = _rotationCenter.position + _currentCenterOffset;
+        }
+
+        private void TurnByDirection()
+        {
+            transform.LookAt(_rotationCenter.position);
+            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
+            transform.Rotate(0, -90 * _currentTurnSide, 0);
+        }
+
+        private void AlignDirection()
+        {
+            float snappedY = Mathf.Round(_transform.eulerAngles.y / 90) * 90;
+
+            if (Mathf.Abs(snappedY - _transform.eulerAngles.y) <= _snapThreshold)
+                transform.rotation = Quaternion.Euler(transform.eulerAngles.x, snappedY, transform.eulerAngles.z);
         }
     }
 }
